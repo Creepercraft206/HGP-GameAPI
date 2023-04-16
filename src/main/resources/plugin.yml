@@ -1,0 +1,4 @@
+name: HGP-GameAPI
+version: '${project.version}'
+main: de.hgpractice.hgpgameapi.HGP_GameAPI
+authors: [Creeper_craft]
