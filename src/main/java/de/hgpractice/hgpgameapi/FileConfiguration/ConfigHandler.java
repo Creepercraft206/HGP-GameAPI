@@ -16,7 +16,7 @@ public class ConfigHandler {
     /**
      * Create a new Yaml configuration file
      * @param fileName Name of the file without .yml
-     * @param path Path to the file (e.g. "plugins//HGP_GameAPI//")
+     * @param path Path to the file (e.g. "plugins//HGP_GameAPI")
      */
     public ConfigHandler(String fileName, String path) {
         this.fileName = fileName;

@@ -87,4 +87,18 @@ public class GamePlayer {
     public static ArrayList<GamePlayer> getAllPlayers() {
         return gamePlayers;
     }
+
+    /**
+     * Get a player by the Bukkit player object
+     * @param player Player you want to get the GamePlayer object from
+     * @return GamePlayer object
+     */
+    public static GamePlayer getPlayer(Player player) {
+        for (GamePlayer gamePlayer : gamePlayers) {
+            if (gamePlayer.getPlayer().equals(player)) {
+                return gamePlayer;
+            }
+        }
+        return null;
+    }
 }
