@@ -98,6 +98,36 @@ public abstract class SQLHandler {
     }
 
     /**
+     * Checks if a row exists in a table.
+     * @param query The query to check
+     * @return If the row exists
+     */
+    public boolean isRegistered(String query) {
+        boolean bool = false;
+        try {
+            ResultSet rs = getQueryResult(query);
+            try {
+                bool = rs.next();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                rs.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bool;
+    }
+
+    /**
+     * Checks if the connection to the MySQL database is established.
+     * @return If the connection is established
+     */
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    /**
      * Creates a table in the MySQL database. Can be implemented with {@link #query(String)}.
      */
     public abstract void createTable();
