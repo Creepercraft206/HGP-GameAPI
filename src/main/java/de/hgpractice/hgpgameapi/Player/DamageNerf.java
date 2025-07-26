@@ -10,7 +10,7 @@ public class DamageNerf implements Listener {
     /**
      * Toggle to true to enable customised damage for better PvP experience
      */
-    private static boolean damageNerfEnabled = false;
+    public static boolean damageNerfEnabled = false;
 
     /**
      * Nerfs the damage of the player depending on the item in hand

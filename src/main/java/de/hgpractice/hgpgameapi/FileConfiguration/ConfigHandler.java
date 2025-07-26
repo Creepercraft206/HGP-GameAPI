@@ -5,13 +5,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class ConfigHandler {
 
-    private String fileName;
-    private String path;
-    private HashMap<String, Object> configSettings = new HashMap<String, Object>();
+    private final String fileName;
+    private final String path;
+    private final LinkedHashMap<String, Object> configSettings = new LinkedHashMap<String, Object>();
 
     /**
      * Create a new Yaml configuration file
@@ -39,20 +39,25 @@ public class ConfigHandler {
         File dir = new File(this.path + "//");
         File file = new File(this.path + "//" + this.fileName + ".yml");
         if (!dir.exists()) dir.mkdir();
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+
+        FileConfiguration cfg = new YamlConfiguration();
+
         for (String setting : configSettings.keySet()) {
-            if (cfg.get(setting) == null) {
-                cfg.set(setting, configSettings.get(setting));
+            cfg.set(setting, configSettings.get(setting));
+        }
+
+        if (file.exists()) {
+            FileConfiguration existingCfg = YamlConfiguration.loadConfiguration(file);
+            for (String setting : configSettings.keySet()) {
+                Object existingValue = existingCfg.get(setting);
+                if (existingValue != null) {
+                    cfg.set(setting, existingValue);
+                }
             }
         }
+
         try {
+            if (!file.exists()) file.createNewFile();
             cfg.save(file);
         } catch (IOException e) {
             e.printStackTrace();

@@ -37,7 +37,7 @@ public abstract class SQLHandler {
         if (!this.isConnected) {
             try {
                 con = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?autoReconnect=true", this.username, this.password);
-                System.out.println("Die MySQL Verbindung wurde erfolgreich zu " + this.host + ":" + this.port + "/" + this.database + " aufgebaut.");
+                System.out.println("Connected successfully to database: " + this.host + ":" + this.port + "/" + this.database);
                 isConnected = true;
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -52,7 +52,7 @@ public abstract class SQLHandler {
         if (this.isConnected) {
             try {
                 this.con.close();
-                System.out.println("Die MySQL Verbindung zu " + this.host + ":" + this.port + "/" + this.database + " wurde erfolgreich geschlossen.");
+                System.out.println("Closed connection to database: " + this.host + ":" + this.port + "/" + this.database);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -71,11 +71,14 @@ public abstract class SQLHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                ps.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
+
         }
     }
 
@@ -93,6 +96,20 @@ public abstract class SQLHandler {
             return rs;
         } catch (SQLException e) {
             e.printStackTrace();
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
             return null;
         }
     }
@@ -103,20 +120,31 @@ public abstract class SQLHandler {
      * @return If the row exists
      */
     public boolean isRegistered(String query) {
-        boolean bool = false;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
-            ResultSet rs = getQueryResult(query);
-            try {
-                bool = rs.next();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                rs.close();
-            }
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return bool;
     }
 
     /**
